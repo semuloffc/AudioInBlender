@@ -27,8 +27,16 @@ public class AudioCapture
         }
     }
 
+    public event Action<float[]>? SamplesAvailable;
     private void OnDataAvailable(object? sender, WaveInEventArgs e)
     {
-        Console.WriteLine($"{e.BytesRecorded} bytes of audio data received");
+        float[] samples = new float[e.BytesRecorded / 2];
+        for (int i = 0; i < samples.Length; i++)
+        {
+            short sample = BitConverter.ToInt16(e.Buffer, i * 2);
+            samples[i] = sample / 32768f;
+        }
+
+        SamplesAvailable?.Invoke(samples);
     }
 }
