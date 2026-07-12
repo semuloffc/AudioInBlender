@@ -9,8 +9,9 @@
         
         var capture = new AudioCapture();
         var rmsAnalyzer = new AudioRMSAnalyzer(capture);
+        var sender = new UDPSender();
 
-        rmsAnalyzer.AmplitudeUpdated += SendToConsole;
+        rmsAnalyzer.AmplitudeUpdated += sender.Send;
 
         capture.StartCapture(Selected);
 

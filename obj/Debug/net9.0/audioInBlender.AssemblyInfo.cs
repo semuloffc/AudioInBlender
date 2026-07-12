@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("audioInBlender")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e2df799dadc94f78000bf1b094a2efa691bffe95")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+192a2915c14b1b35d8431df5a47a2ccd433276ec")]
 [assembly: System.Reflection.AssemblyProductAttribute("audioInBlender")]
 [assembly: System.Reflection.AssemblyTitleAttribute("audioInBlender")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
