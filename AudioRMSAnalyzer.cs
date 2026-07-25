@@ -1,25 +1,51 @@
-public class AudioRMSAnalyzer
+using System;
+
+namespace AudioInBlender
 {
-    private float currentRms = 0f;
-
-    public event Action<float>? AmplitudeUpdated;
-
-    public AudioRMSAnalyzer(AudioCapture capture)
+    public class AudioRMSAnalyzer
     {
-        capture.SamplesAvailable += OnSamplesAvailable;
-    }
-    
-    private void OnSamplesAvailable(float[] samples)
-    {
-        float sum = 0f;
-        foreach (float s in samples)
+        private readonly AudioAnalyzerConfig _config;
+        private float _previousSmoothed = 0f;
+
+        public event Action<float> AmplitudeUpdated;
+
+
+        public AudioRMSAnalyzer(AudioAnalyzerConfig config)
         {
-            sum += s * s;
+            _config = config;
         }
-        float rms = MathF.Sqrt(sum / samples.Length);
 
-        currentRms = MathF.Min(rms * 3f, 1f);
 
-        AmplitudeUpdated?.Invoke(currentRms);
+        public void OnSamplesAvailable(float[] samples)
+        {
+
+            float sum = 0;
+            foreach (var s in samples)
+                sum += s * s;
+            float rms = MathF.Sqrt(sum / samples.Length);
+
+            float raw = MathF.Min(rms * _config.BoostFactor, 1.0f);
+
+            if (_config.EnableSmoothing)
+            {
+                float diff = raw - _previousSmoothed;
+
+                if (MathF.Abs(diff) > _config.SmoothingThreshold)
+                {
+                    float smoothed = _previousSmoothed + diff * _config.SmoothingFactor;
+                    _previousSmoothed = Math.Clamp(smoothed, 0f, 1f);
+                }
+                else
+                {
+                    _previousSmoothed = raw;
+                }
+            }
+            else
+            {
+                _previousSmoothed = raw;
+            }
+
+            AmplitudeUpdated?.Invoke(_previousSmoothed);
+        }
     }
 }
